@@ -1,4 +1,3 @@
-# address_analysis.py
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -7,7 +6,7 @@ import seaborn as sns
 sns.set(style="whitegrid")
 plt.rcParams['figure.figsize'] = (10, 6)
 
-# === Load & Clean Data ===
+#  Load & Clean Data 
 file_path = r"C:\Users\Algo-Tech Systems\Desktop\bankloans.csv"
 with open(file_path, 'r') as file:
     content = file.read()
@@ -29,9 +28,9 @@ df = pd.DataFrame(data_rows, columns=['age','ed','employ','address','income','de
 for c in df.columns: df[c] = pd.to_numeric(df[c], errors='coerce')
 df = df[df['default'].isin([0,1])].dropna().reset_index(drop=True)
 
-# === Analyze 'address' ===
+#  Analyze 'address' 
 col = 'address'
-print(f"\n📊 LOGICAL ANALYSIS: {col.upper()}")
+print(f"\n LOGICAL ANALYSIS: {col.upper()}")
 print("="*50)
 print(f"• Mean: {df[col].mean():.2f}, Range: {df[col].min():.0f} → {df[col].max():.0f}")
 print(f"• Outliers: {len(df[(df[col] < df[col].quantile(0.25)-1.5*(df[col].quantile(0.75)-df[col].quantile(0.25))) | (df[col] > df[col].quantile(0.75)+1.5*(df[col].quantile(0.75)-df[col].quantile(0.25)))])}")

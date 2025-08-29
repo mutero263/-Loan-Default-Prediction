@@ -1,4 +1,3 @@
-# regression.py
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -14,20 +13,20 @@ warnings.filterwarnings('ignore')
 sns.set(style="whitegrid")
 plt.rcParams['figure.figsize'] = (10, 6)
 
-# === Step 1: Read raw file ===
+# Read file 
 file_path = r"C:\Users\Algo-Tech Systems\Desktop\bankloans.csv"
 
 try:
     with open(file_path, 'r') as file:
         content = file.read()
 except FileNotFoundError:
-    print(f"❌ File not found: {file_path}")
+    print(f"File not found: {file_path}")
     exit()
 
-# === Step 2: Clean and split all values by comma ===
+# Clean and split all values by comma 
 values = [v.strip() for v in content.replace('\n', '').replace('\r', '').split(',') if v.strip()]
 
-# === Step 3: Fix merged 'default41' → split into 'default' and number ===
+# Fix merged 'default41' → split into 'default' and number 
 cleaned_values = []
 for v in values:
     if v.lower().startswith('default') and len(v) > 7:
@@ -38,7 +37,7 @@ for v in values:
     else:
         cleaned_values.append(v)
 
-# === Step 4: Group every 9 values into a row ===
+# Group every 9 values into a row
 n_cols = 9
 num_rows = len(cleaned_values) // n_cols
 data_rows = []
@@ -50,33 +49,33 @@ for i in range(num_rows):
     if len(row) == n_cols:
         data_rows.append(row)
 
-# === Step 5: Define column names ===
+# Define column names
 columns = ['age', 'ed', 'employ', 'address', 'income', 'debtinc', 'creddebt', 'othdebt', 'default']
 
-# === Step 6: Create DataFrame ===
+# Create DataFrame
 df = pd.DataFrame(data_rows, columns=columns)
 
-# === Step 7: Convert all columns to numeric ===
+# Convert all columns to numeric
 for col in columns:
     df[col] = pd.to_numeric(df[col], errors='coerce')
 
-# === Step 8: Filter valid 'default' values (0 or 1 only) ===
+# Filter valid 'default' values (0 or 1 only)
 df = df[df['default'].isin([0, 1])]
 df.dropna(inplace=True)
 df.reset_index(drop=True, inplace=True)
 
-print(f"✅ Cleaned dataset shape: {df.shape}")
+print(f"Cleaned dataset shape: {df.shape}")
 print("\nFirst 5 rows:")
 print(df.head())
 
-# === Step 9: Prepare features and target ===
+# Prepare features and target
 X = df.drop('default', axis=1)
 y = df['default']
 
 # Add constant for statsmodels
 X_sm = sm.add_constant(X)
 
-# === Step 10: Fit Logistic Regression using statsmodels (for p-values) ===
+# Fit Logistic Regression using statsmodels (for p-values)
 print("\n" + "="*60)
 print("TRADITIONAL LOGISTIC REGRESSION RESULTS")
 print("="*60)
@@ -108,7 +107,7 @@ try:
     print("="*80)
     print(results_df.to_string(index=False))
 
-    # === Step 11: Model Evaluation (sklearn) ===
+    # Model Evaluation (sklearn)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42, stratify=y)
     lr = LogisticRegression(max_iter=1000)
     lr.fit(X_train, y_train)
@@ -133,4 +132,4 @@ try:
     plt.show()
 
 except Exception as e:
-    print(f"❌ Model fitting failed: {str(e)}")
+    print(f"Model fitting failed: {str(e)}")

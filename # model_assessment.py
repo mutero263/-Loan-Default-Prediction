@@ -1,4 +1,3 @@
- # model_assessment.py
 import os
 import pandas as pd
 import numpy as np
@@ -8,7 +7,7 @@ import warnings
 
 # Suppress warnings
 warnings.filterwarnings('ignore')
-os.environ['PYTENSOR_FLAGS'] = 'cxx='  # Suppress g++ warning
+os.environ['PYTENSOR_FLAGS'] = 'cxx=' 
 
 # Set style
 sns.set(style="whitegrid")
@@ -22,7 +21,7 @@ def load_and_clean_data():
         with open(file_path, 'r') as file:
             content = file.read()
     except FileNotFoundError:
-        print(f"❌ File not found: {file_path}")
+        print(f"File not found: {file_path}")
         return None
 
     # Clean and split
@@ -64,7 +63,7 @@ def load_and_clean_data():
     df.dropna(inplace=True)
     df.reset_index(drop=True, inplace=True)
 
-    print(f"✅ Cleaned dataset shape: {df.shape}")
+    print(f"Cleaned dataset shape: {df.shape}")
     print("\nFirst 5 rows:")
     print(df.head())
 
@@ -166,7 +165,7 @@ def run_model_assessment():
                 target_accept=0.99,
                 return_inferencedata=True,
                 random_seed=42,
-                idata_kwargs={"log_likelihood": True}  # Required for WAIC/LOO
+                idata_kwargs={"log_likelihood": True}  
             )
 
         # Posterior Predictive Check
@@ -191,7 +190,7 @@ def run_model_assessment():
             waic = az.waic(trace)
             loo = az.loo(trace)
 
-            # Safe access for different ArviZ versions
+            
             try:
                 waic_value = waic.estimates.loc['waic', 'value']
                 loo_value = loo.estimates.loc['loo', 'value']
@@ -202,7 +201,7 @@ def run_model_assessment():
             print(f"WAIC:      {waic_value:.4f}")
             print(f"LOO:       {loo_value:.4f}")
         except Exception as e:
-            print(f"❌ Could not compute WAIC/LOO: {str(e)}")
+            print(f"Could not compute WAIC/LOO: {str(e)}")
             waic_value = np.nan
             loo_value = np.nan
 
@@ -219,15 +218,15 @@ def run_model_assessment():
         plt.show()
 
     except ImportError:
-        print("❌ PyMC or ArviZ not installed. Install with: pip install pymc arviz")
+        print("PyMC or ArviZ not installed. Install with: pip install pymc arviz")
         bayes_accuracy = bayes_auc = bayes_rmse = bayes_bias = bayes_precision = np.nan
         waic_value = loo_value = np.nan
     except Exception as e:
-        print(f"❌ Bayesian model failed: {str(e)}")
+        print(f"Bayesian model failed: {str(e)}")
         bayes_accuracy = bayes_auc = bayes_rmse = bayes_bias = bayes_precision = np.nan
         waic_value = loo_value = np.nan
 
-    # === 3. Model Comparison Table ===
+    # Model Comparison Table 
     print("\n" + "="*80)
     print("3. MODEL COMPARISON")
     print("="*80)
@@ -246,7 +245,7 @@ def run_model_assessment():
 
     print(comparison.round(4))
 
-    # === 4. ROC and PR Curves ===
+    # ROC and PR Curves
     fpr_lr, tpr_lr, _ = roc_curve(y_test, y_pred_proba_lr)
     prec_lr, rec_lr, _ = precision_recall_curve(y_test, y_pred_proba_lr)
 
@@ -280,7 +279,7 @@ def run_model_assessment():
     plt.tight_layout()
     plt.show()
 
-    # === 5. Feature Importance (Odds Ratios) ===
+    # Feature Importance (Odds Ratios)
     if hasattr(lr, 'coef_'):
         odds_ratios = np.exp(lr.coef_[0])
         features = X.columns
@@ -295,6 +294,5 @@ def run_model_assessment():
         plt.tight_layout()
         plt.show()
 
-# 🔑 CRITICAL: Protect the entry point to fix multiprocessing error
 if __name__ == '__main__':
     run_model_assessment()

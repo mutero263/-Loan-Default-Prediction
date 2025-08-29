@@ -1,4 +1,3 @@
-# baysian.py
 import os
 import pandas as pd
 import numpy as np
@@ -6,9 +5,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import warnings
 
-# Suppress warnings
 warnings.filterwarnings('ignore')
-os.environ['PYTENSOR_FLAGS'] = 'cxx='  # Optional: suppress g++ warning
+os.environ['PYTENSOR_FLAGS'] = 'cxx=' 
 
 # Set style
 sns.set(style="whitegrid")
@@ -22,7 +20,7 @@ def load_and_clean_data():
         with open(file_path, 'r') as file:
             content = file.read()
     except FileNotFoundError:
-        print(f"❌ File not found: {file_path}")
+        print(f" File not found: {file_path}")
         return None
 
     # Clean and split
@@ -64,7 +62,7 @@ def load_and_clean_data():
     df.dropna(inplace=True)
     df.reset_index(drop=True, inplace=True)
 
-    print(f"✅ Cleaned dataset shape: {df.shape}")
+    print(f"Cleaned dataset shape: {df.shape}")
     print("\nFirst 5 rows:")
     print(df.head())
 
@@ -84,7 +82,7 @@ def run_bayesian_model():
     X_scaled = X_scaled.astype(float)
     y = y.astype(float)
 
-    print("\n✅ Features standardized for Bayesian modeling.")
+    print("\nFeatures standardized for Bayesian modeling.")
 
     try:
         import pymc as pm
@@ -131,7 +129,7 @@ def run_bayesian_model():
                 continue
             hdi_low = row['hdi_3%']
             hdi_high = row['hdi_97%']
-            if hdi_low * hdi_high > 0:  # Same sign → excludes 0
+            if hdi_low * hdi_high > 0:  
                 significance.append('Significant')
             else:
                 significance.append('Insignificant')
@@ -187,10 +185,9 @@ def run_bayesian_model():
         plt.show()
 
     except ImportError:
-        print("❌ PyMC not installed. Install with: pip install pymc")
+        print("PyMC not installed. Install with: pip install pymc")
     except Exception as e:
-        print(f"❌ Model sampling failed: {str(e)}")
+        print(f"Model sampling failed: {str(e)}")
 
-# 🔑 CRITICAL: Protect the entry point to fix multiprocessing error
 if __name__ == '__main__':
     run_bayesian_model()

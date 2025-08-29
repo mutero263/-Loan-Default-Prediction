@@ -1,11 +1,10 @@
-# predictive_power.py
 import pandas as pd
 import numpy as np
 from sklearn.metrics import roc_auc_score
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-# Step 1: Read raw file
+# Read file
 file_path = r"C:\Users\Algo-Tech Systems\Desktop\bankloans.csv"
 
 with open(file_path, 'r') as file:
@@ -28,7 +27,7 @@ for v in values:
     else:
         cleaned_values.append(v)
 
-# Step 2: Group every 9 values into a row
+# Group every 9 values into a row
 n_cols = 9
 num_rows = len(cleaned_values) // n_cols
 data_rows = []
@@ -39,13 +38,13 @@ for i in range(num_rows):
     row = cleaned_values[start_idx:end_idx]
     data_rows.append(row)
 
-# Step 3: Define correct column names
+# Define correct column names
 columns = ['age', 'ed', 'employ', 'address', 'income', 'debtinc', 'creddebt', 'othdebt', 'default']
 
-# Step 4: Create DataFrame
+# Create DataFrame
 df = pd.DataFrame(data_rows, columns=columns)
 
-# Step 5: Convert all columns to numeric
+# Convert all columns to numeric
 df = df.apply(pd.to_numeric, errors='coerce')
 
 # Drop any rows with missing/invalid values
@@ -60,7 +59,7 @@ if not valid_defaults.all():
 
 print(f"Cleaned dataset shape: {df.shape}")
 
-# Step 6: Function to calculate GINI, IV
+# Function to calculate GINI, IV
 def calculate_gini_iv(df, target='default'):
     results = []
     for col in df.columns:
@@ -113,16 +112,16 @@ def calculate_gini_iv(df, target='default'):
 
     return pd.DataFrame(results).sort_values(by='IV', ascending=False).reset_index(drop=True)
 
-# Step 7: Run analysis
+# Run analysis
 results = calculate_gini_iv(df, target='default')
 
-# Step 8: Display
+# Display
 print("\n" + "="*60)
 print("PREDICTIVE STRENGTH OF VARIABLES")
 print("="*60)
 print(results.to_string(index=False))
 
-# Step 9: Plot IV
+# Plot IV
 plt.figure(figsize=(10, 6))
 sns.barplot(data=results, x='IV', y='Variable', palette='Blues_r')
 plt.title('Information Value (IV) of Variables', fontsize=16)

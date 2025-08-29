@@ -1,4 +1,3 @@
-# address_split_density.py
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -7,7 +6,7 @@ import seaborn as sns
 sns.set(style="whitegrid")
 plt.rcParams['figure.figsize'] = (10, 6)
 
-# === Load and Clean Data ===
+#  Load and Clean Data 
 file_path = r"C:\Users\Algo-Tech Systems\Desktop\bankloans.csv"
 with open(file_path, 'r') as file:
     content = file.read()
@@ -35,7 +34,7 @@ for col in columns:
 
 df = df[df['default'].isin([0, 1])].dropna().reset_index(drop=True)
 
-# === Analyze 'address' ===
+# Analyze 'address'
 col = 'address'
 not_default = df[df['default'] == 0][col]
 default = df[df['default'] == 1][col]

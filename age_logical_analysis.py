@@ -1,4 +1,3 @@
-# age_analysis.py
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -8,14 +7,14 @@ import seaborn as sns
 sns.set(style="whitegrid")
 plt.rcParams['figure.figsize'] = (10, 6)
 
-# === Step 1: Load and Clean Data (Embedded) ===
+# Load and Clean Data (Embedded) ===
 file_path = r"C:\Users\Algo-Tech Systems\Desktop\bankloans.csv"
 
 try:
     with open(file_path, 'r') as file:
         content = file.read()
 except FileNotFoundError:
-    print(f"❌ File not found: {file_path}")
+    print(f" File not found: {file_path}")
     exit()
 
 # Clean and split
@@ -50,10 +49,10 @@ df = df[df['default'].isin([0, 1])]
 df.dropna(inplace=True)
 df.reset_index(drop=True, inplace=True)
 
-# === Step 2: Analyze 'age' ===
+# Analyze 'age' ===
 col = 'age'
 
-print(f"\n📊 LOGICAL ANALYSIS: {col.upper()}")
+print(f"\n LOGICAL ANALYSIS: {col.upper()}")
 print("="*50)
 print(f"• Data Type: {df[col].dtype}")
 print(f"• Total Rows: {len(df)}")

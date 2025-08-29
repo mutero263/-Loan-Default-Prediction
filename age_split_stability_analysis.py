@@ -1,4 +1,3 @@
-# age_split_stability_analysis.py
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -8,20 +7,20 @@ import seaborn as sns
 sns.set(style="whitegrid")
 plt.rcParams['figure.figsize'] = (10, 6)
 
-# === Step 1: Read raw file ===
+#  Read raw file ===
 file_path = r"C:\Users\Algo-Tech Systems\Desktop\bankloans.csv"
 
 try:
     with open(file_path, 'r') as file:
         content = file.read()
 except FileNotFoundError:
-    print(f"❌ File not found: {file_path}")
+    print(f"File not found: {file_path}")
     exit()
 
-# === Step 2: Clean and split all values by comma ===
+# Clean and split all values by comma ===
 values = [v.strip() for v in content.replace('\n', '').replace('\r', '').split(',') if v.strip()]
 
-# === Step 3: Fix merged 'default41' → split into 'default' and number ===
+#  Fix merged 'default41' → split into 'default' and number ===
 cleaned_values = []
 for v in values:
     if v.lower().startswith('default') and len(v) > 7:
@@ -32,7 +31,7 @@ for v in values:
     else:
         cleaned_values.append(v)
 
-# === Step 4: Group every 9 values into a row ===
+# Group every 9 values into a row ===
 n_cols = 9
 num_rows = len(cleaned_values) // n_cols
 data_rows = []
@@ -44,26 +43,26 @@ for i in range(num_rows):
     if len(row) == n_cols:
         data_rows.append(row)
 
-# === Step 5: Define column names ===
+# Define column names ===
 columns = ['age', 'ed', 'employ', 'address', 'income', 'debtinc', 'creddebt', 'othdebt', 'default']
 
-# === Step 6: Create DataFrame ===
+# Create DataFrame ===
 df = pd.DataFrame(data_rows, columns=columns)
 
-# === Step 7: Convert all columns to numeric ===
+# Convert all columns to numeric ===
 for col in columns:
     df[col] = pd.to_numeric(df[col], errors='coerce')
 
-# === Step 8: Filter valid 'default' values (0 or 1 only) ===
+# Filter valid 'default' values (0 or 1 only) ===
 df = df[df['default'].isin([0, 1])]
 df.dropna(inplace=True)
 df.reset_index(drop=True, inplace=True)
 
-print(f"✅ Cleaned dataset shape: {df.shape}")
+print(f" Cleaned dataset shape: {df.shape}")
 print("\nFirst 5 rows:")
 print(df.head())
 
-# === Step 9: Analyze 'age' - Split Density Plot ===
+# Analyze 'age' - Split Density Plot ===
 col = 'age'
 
 # Separate data by default status

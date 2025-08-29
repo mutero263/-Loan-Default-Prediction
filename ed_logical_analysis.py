@@ -1,4 +1,3 @@
-# ed_analysis.py
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -7,7 +6,7 @@ import seaborn as sns
 sns.set(style="whitegrid")
 plt.rcParams['figure.figsize'] = (10, 6)
 
-# === Load & Clean Data ===
+# Load & Clean Data 
 file_path = r"C:\Users\Algo-Tech Systems\Desktop\bankloans.csv"
 with open(file_path, 'r') as file:
     content = file.read()

@@ -1,4 +1,3 @@
-# predictive_checks.py
 import os
 import pandas as pd
 import numpy as np
@@ -19,7 +18,7 @@ def load_and_clean_data():
         with open(file_path, 'r') as file:
             content = file.read()
     except FileNotFoundError:
-        print(f"❌ File not found: {file_path}")
+        print(f" File not found: {file_path}")
         return None
 
     # Clean and split
@@ -61,7 +60,7 @@ def load_and_clean_data():
     df.dropna(inplace=True)
     df.reset_index(drop=True, inplace=True)
 
-    print(f"✅ Cleaned dataset shape: {df.shape}")
+    print(f" Cleaned dataset shape: {df.shape}")
     print("\nFirst 5 rows:")
     print(df.head())
 
@@ -87,7 +86,7 @@ def run_predictive_checks():
     from sklearn.model_selection import train_test_split
     X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.3, random_state=42, stratify=y)
 
-    # === 1. Traditional Logistic Regression Predictive Check ===
+    #  Traditional Logistic Regression Predictive Check 
     print("\n" + "="*80)
     print("1. TRADITIONAL LOGISTIC REGRESSION - PREDICTIVE CHECKS")
     print("="*80)
@@ -101,7 +100,7 @@ def run_predictive_checks():
 
     y_pred_proba = lr.predict_proba(X_test)[:, 1]
 
-    # --- Predictive Check 1: ROC Curve ---
+    # Predictive Check 1: ROC Curve
     fpr, tpr, _ = roc_curve(y_test, y_pred_proba)
     roc_auc = auc(fpr, tpr)
 
@@ -117,7 +116,7 @@ def run_predictive_checks():
     plt.title('ROC Curve')
     plt.legend()
 
-    # --- Predictive Check 2: Calibration Plot ---
+    #  Predictive Check 2: Calibration Plot 
     fraction_of_positives, mean_predicted = calibration_curve(y_test, y_pred_proba, n_bins=10)
 
     plt.subplot(1, 3, 2)
@@ -128,7 +127,7 @@ def run_predictive_checks():
     plt.title("Calibration Plot")
     plt.legend()
 
-    # --- Predictive Check 3: Brier Score & Residuals ---
+    #  Predictive Check 3: Brier Score & Residuals 
     brier = brier_score_loss(y_test, y_pred_proba)
     print(f"Brier Score (Mean Squared Calibration Error): {brier:.4f}")
 
@@ -145,9 +144,9 @@ def run_predictive_checks():
     plt.tight_layout()
     plt.show()
 
-    print("✅ Traditional Model: Predictive checks completed.")
+    print(" Traditional Model: Predictive checks completed.")
 
-    # === 2. Bayesian Logistic Regression Predictive Check ===
+    # Bayesian Logistic Regression Predictive Check 
     print("\n" + "="*80)
     print("2. BAYESIAN LOGISTIC REGRESSION - PREDICTIVE CHECKS")
     print("="*80)
@@ -191,7 +190,7 @@ def run_predictive_checks():
             y_test = y_test[:min_len]
             ppc_probs = ppc_probs[:min_len]
 
-        # --- Predictive Check 1: PPC Plot ---
+        # Predictive Check 1: PPC Plot 
         plt.figure(figsize=(16, 5))
 
         plt.subplot(1, 3, 1)
@@ -199,7 +198,7 @@ def run_predictive_checks():
         plt.title('Posterior Predictive Check (PPC)')
         plt.ylabel('Density')
 
-        # --- Predictive Check 2: Observed vs Predicted ---
+        # Predictive Check 2: Observed vs Predicted 
         plt.subplot(1, 3, 2)
         plt.scatter(y_test, ppc_probs, alpha=0.6)
         plt.plot([0, 1], [0, 1], 'r--', lw=2)
@@ -207,7 +206,7 @@ def run_predictive_checks():
         plt.ylabel('Predicted (Bayesian)')
         plt.title('Observed vs Predicted Probabilities')
 
-        # --- Predictive Check 3: Binned Residuals ---
+        # Predictive Check 3: Binned Residuals 
         df_bayes = pd.DataFrame({'y_true': y_test, 'y_prob': ppc_probs})
         df_bayes['bin'] = pd.cut(df_bayes['y_prob'], bins=10, labels=False)
         binned_residuals_bayes = df_bayes.groupby('bin').apply(
@@ -231,13 +230,12 @@ def run_predictive_checks():
         plt.tight_layout()
         plt.show()
 
-        print("✅ Bayesian Model: Predictive checks completed.")
+        print("Bayesian Model: Predictive checks completed.")
 
     except ImportError:
-        print("❌ Missing libraries: pip install pymc arviz")
+        print("Missing libraries: pip install pymc arviz")
     except Exception as e:
-        print(f"❌ Bayesian model failed: {str(e)}")
+        print(f"Bayesian model failed: {str(e)}")
 
-# 🔑 CRITICAL: Protect the entry point
 if __name__ == '__main__':
     run_predictive_checks()
